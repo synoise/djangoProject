@@ -1,0 +1,70 @@
+{% load static %}
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>OX5</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'style/style.css' %}">
+<!--    <link rel="stylesheet" type="text/css" media="screen" href="./style/style.css">-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.4.0/socket.io.js"></script>
+</head>
+<body>
+    <section>
+        <div class="score">
+                <h3>X score:&nbsp;<p class="xScore">0</p>
+                </h3>
+                <h3>O score:&nbsp;<p class="oScore">0</p>
+                </h3>
+                <div class='chat'>
+                    <div id="msg"></div>
+                    <form id="chat-form">
+                        <input id="chat-input" type="text">
+                    </form>
+                </div>
+        </div>
+        <div id='ttt5'>
+            <div class="winner__alert"></div>
+            <div id='board'>        </div>
+        </div>
+    </section>
+<!--    <script>-->
+<!--    </script>-->
+    <span style="color: white">
+<input type="checkbox" id="loop" name="loop">LOOP
+<input type="checkbox" id="player" name="player">PLAYER</span>
+<!--    <script src="./js/app.js"></script>-->
+    <script src="{% static '/js/app_offline.js' %}"></script>
+    <script src="{% static '/js/sock.js' %}"></script>
+<!--    <script src="./js/sock.js"></script>-->
+
+<script>
+
+        const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/chat/array/'
+        );
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            document.querySelector('#chat-log').value += (data.message + '\n');
+        };
+
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+
+
+        // document.querySelector('#chat-message-submit').onclick = function(e) {
+        //     const messageInputDom = document.querySelector('#chat-message-input');
+        //     const message = messageInputDom.value;
+        //     chatSocket.send(JSON.stringify({
+        //         'message': message
+        //     }));
+        //     messageInputDom.value = '';
+        // };
+    </script>
+</body>
