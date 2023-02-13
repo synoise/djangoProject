@@ -27,6 +27,8 @@ application = ProtocolTypeRouter(
             AuthMiddlewareStack(URLRouter(
                 [
                     re_path("ws/chat/array", djangoProject.ChatConsumer.as_asgi()),
+                    re_path("ws/chat/learn", djangoProject.LearnConsumer.as_asgi()),
+                    # re_path(r"ws/chat/(?P<room_name>\w+)/$", djangoProject.ChatConsumer.as_asgi()),
                 ]
             ))
         )

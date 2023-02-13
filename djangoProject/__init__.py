@@ -20,13 +20,20 @@ class ChatConsumer(WebsocketConsumer):
         state = numpy.array(text_data_json["message"], dtype=numpy.int8)
         winner = text_data_json["winner"]
         aivsai = text_data_json["aivsai"]
-        # if aivsai:
-        #     self.send(text_data=json.dumps({"message": neural.getMove(state, gamer, award, winner, aivsai)}))
-        # print("winner", winner, "| gamer", gamer, "| award", award)
-        # print("state", state)
-        print(aivsai)
-        print(aivsai)
         if not winner:
-            self.send(text_data=json.dumps( neural.addMove(state, gamer, award, winner, aivsai)))
+            self.send(text_data=json.dumps(neural.addMove(state, gamer, award, winner, aivsai)))
         else:
             neural.resetState()
+
+
+class LearnConsumer(WebsocketConsumer):
+
+    def connect(self):
+        self.accept()
+
+    def disconnect(self, close_code):
+        pass
+
+    def receive(self, text_data=None, bytes_data=None):
+        print(666)
+        neural.startLearn()

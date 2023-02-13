@@ -34,6 +34,7 @@
     <span style="color: white">
 <input type="checkbox" id="loop" name="loop">LOOP
 <input type="checkbox" id="player" name="player">PLAYER</span>
+<input type="button" id="learn" name="learn" value="LEARN">LEARN</span>
 <!--    <script src="./js/app.js"></script>-->
     <script src="{% static '/js/app_offline.js' %}"></script>
     <script src="{% static '/js/sock.js' %}"></script>
@@ -41,20 +42,20 @@
 
 <script>
 
-        const chatSocket = new WebSocket(
-            'ws://'
-            + window.location.host
-            + '/ws/chat/array/'
-        );
+        {#const chatSocket = new WebSocket(#}
+        {#    'ws://'#}
+        {#    + window.location.host#}
+        {#    + '/ws/chat/array/'#}
+        {#);#}
+        {##}
+        {#chatSocket.onmessage = function(e) {#}
+        {#    const data = JSON.parse(e.data);#}
+        {#    document.querySelector('#chat-log').value += (data.message + '\n');#}
+        {#};#}
 
-        chatSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
-        };
-
-        chatSocket.onclose = function(e) {
-            console.error('Chat socket closed unexpectedly');
-        };
+        {#chatSocket.onclose = function(e) {#}
+        {#    console.error('Chat socket closed unexpectedly');#}
+        {#};#}
 
 
 

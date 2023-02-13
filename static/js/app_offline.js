@@ -5,11 +5,17 @@ document.addEventListener('DOMContentLoaded', () => {
         + window.location.host
         + '/ws/chat/array/'
     );
+    const learnSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/chat/learn/'
+    );
 
     chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
         setRecivedMove( data.area, data.gamer, data.areaai, data.pos )
     };
+
 
     // chatSocket.onclose = function(e) {
     //     console.error('Chat socket closed unexpectedly');
@@ -63,6 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
         $('#player').attr('value', player);
         console.log(player)
     }
+    function starnLearn() {
+        console.log(324)
+        learnSocket.send(JSON.stringify({}));
+    }
+
+    $('#learn').on('click', starnLearn);
 
     $('#loop').on('click', setLoop);
     $('#player').on('click', setPlayer);
