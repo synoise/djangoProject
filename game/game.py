@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 import random
 import numpy as np
 
-class Game(ABC):
+class GameTest(ABC):
   def __init__(self, n_agents: int):
     super().__init__()
 

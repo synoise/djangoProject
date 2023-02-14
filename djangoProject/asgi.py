@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/howto/deployment/asgi/
 
 import os
 
-from django.core.asgi import get_asgi_application
+# from django.core.asgi import get_asgi_application
 
 from django.urls import re_path
 from channels.auth import AuthMiddlewareStack
@@ -18,6 +18,10 @@ from channels.security.websocket import AllowedHostsOriginValidator
 from django.core.asgi import get_asgi_application
 
 import djangoProject
+from djangoProject.game.state import ComunicationWS
+
+# from djangoProject.consumers import ChatConsumer,comunicationWS
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'djangoProject.settings')
 
 application = ProtocolTypeRouter(
@@ -27,7 +31,9 @@ application = ProtocolTypeRouter(
             AuthMiddlewareStack(URLRouter(
                 [
                     re_path("ws/chat/array", djangoProject.ChatConsumer.as_asgi()),
-                    re_path("ws/chat/learn", djangoProject.LearnConsumer.as_asgi()),
+                    # re_path("ws/chat/learn", djangoProject.yyy.as_asgi()),
+                    re_path("ws/chat/show", ComunicationWS.as_asgi()),
+                    # re_path("ws/chat/show", djangoProject.show.as_asgi()),
                     # re_path(r"ws/chat/(?P<room_name>\w+)/$", djangoProject.ChatConsumer.as_asgi()),
                 ]
             ))

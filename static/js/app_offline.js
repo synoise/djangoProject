@@ -5,16 +5,35 @@ document.addEventListener('DOMContentLoaded', () => {
         + window.location.host
         + '/ws/chat/array/'
     );
-    const learnSocket = new WebSocket(
+    // const learnSocket = new WebSocket(
+    //     'ws://'
+    //     + window.location.host
+    //     + '/ws/chat/learn/'
+    // );
+
+    const showSocket = new WebSocket(
         'ws://'
         + window.location.host
-        + '/ws/chat/learn/'
+        + '/ws/chat/show/'
     );
 
     chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
         setRecivedMove( data.area, data.gamer, data.areaai, data.pos )
     };
+
+    showSocket.onmessage = function (e) {
+
+        const data = JSON.parse(e.data);
+        //setRecivedMove( data.area, data.gamer, data.areaai, data.pos )
+        console.log("sendM 344",data.action[0])
+        $('.square').eq(data.action[0]*boardSize+data.action[1]).html(unParser(data.symbol));
+    };
+
+    function sendM() {
+        console.log("sendM 344")
+        showSocket.send(JSON.stringify({type:"learn", islearning:false}));
+    }
 
 
     // chatSocket.onclose = function(e) {
@@ -69,12 +88,21 @@ document.addEventListener('DOMContentLoaded', () => {
         $('#player').attr('value', player);
         console.log(player)
     }
-    function starnLearn() {
-        console.log(324)
-        learnSocket.send(JSON.stringify({}));
+    // function starnLearn() {
+    //     console.log("starnLearn")
+    //     learnSocket.send(JSON.stringify({}));
+    // }
+    let learning = false
+
+    function starnlearning() {
+        learning = !learning
+        $('#loop').attr('value', learning);
+        console.log(learning)
+        showSocket.send(JSON.stringify({type:"learn", islearning:learning}));
     }
 
-    $('#learn').on('click', starnLearn);
+    // $('#learn').on('click', starnLearn);
+    $('#learning').on('click', starnlearning);
 
     $('#loop').on('click', setLoop);
     $('#player').on('click', setPlayer);
@@ -85,6 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     function moveHuman() {
+           sendM()
          if ($(this).text() === '') {
              addSymbol($(this))
              tura($(this).attr('data-xy'))
