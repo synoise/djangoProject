@@ -66,10 +66,10 @@ class HumanPlayer:
     def __init__(self, name):
         self.name = name
 
-    def chooseAction(self, positions):
+    def chooseAction(self, positions,row,col):
         while True:
-            row = int(input("Input your action row:"))
-            col = int(input("Input your action col:"))
+            # row = int(input("Input your action rowww:"))
+            # col = int(input("Input your action colll:"))
             action = (row, col)
             if action in positions:
                 return action

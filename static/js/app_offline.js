@@ -26,13 +26,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const data = JSON.parse(e.data);
         //setRecivedMove( data.area, data.gamer, data.areaai, data.pos )
-        console.log("sendM 344",data.action[0])
-        $('.square').eq(data.action[0]*boardSize+data.action[1]).html(unParser(data.symbol));
-    };
+        // console.log("onmessage:",data)
+        switch(data.type){
+            case "show_board":
+                showBoard(data.info);
+                break;
+            case "reset_board":
+                resetBoard(data.info);
+                break;
+            case "winner":
+                    alert("WINNER:  " + data.info === 0 ? "NIKT" : (data.info === 1 ? "0" : "X") );
+                    resetBoard()
+                    // $('#btn').css("display","block")
+                    $('#hidder').css("display","block")
+                break;
 
-    function sendM() {
-        console.log("sendM 344")
-        showSocket.send(JSON.stringify({type:"learn", islearning:false}));
+        }
+    };
+    dd=0
+
+    function resetBoard(info) {
+        console.log("winner", info)
+        makeNewBoard()
+        if(learning)
+        { dd++
+            console.log("epoka", dd)
+            learnInloop()}
+        else
+            $('#hidder').css("display","none")
+    }
+
+    function showBoard(data) {
+           $('.square').eq(data.action[0]*boardSize+data.action[1]).html(unParser(data.symbol));
+    }
+
+    initPlay = true
+
+    function sendMove(arr) {
+        console.log("sendMove",arr)
+        showSocket.send(JSON.stringify({type:"play", move: arr, init: initPlay, symbol:-1}));
+        initPlay = false
     }
 
 
@@ -59,7 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function makeNewBoard() {
         gameArray = []
         resetOrChangeGamerState()
-
         $('#board').empty().off();
         for (let i = 0; i < boardSize; i++) {
             for (let j = 0; j < boardSize; j++) {
@@ -96,9 +128,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function starnlearning() {
         learning = !learning
+        $('#hidder').css("display","block")
         $('#loop').attr('value', learning);
+        if(learning)
+        {
+            showSocket.send(JSON.stringify({type:"learn", islearning:learning}));
+            $('#btn').css("display","none")
+        }
+        else{
+            $('#btn').css("display","block")
+        }
+    }
+
+    function plyVScomp() {
+        console.log("plyVScomp")
+        showSocket.send(JSON.stringify({type:"playVScom"}));
+        // $('#btn').css("display","none")
+        $('#hidder').css("display","none")
+    }
+
+    function learnInloop() {
+        if(learning)
+            showSocket.send(JSON.stringify({type:"learn", islearning:learning}));
         console.log(learning)
-        showSocket.send(JSON.stringify({type:"learn", islearning:learning}));
     }
 
     // $('#learn').on('click', starnLearn);
@@ -106,6 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     $('#loop').on('click', setLoop);
     $('#player').on('click', setPlayer);
+    $('#btn').on('click', plyVScomp);
 
     makeNewBoard();
 
@@ -113,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     function moveHuman() {
-           sendM()
+        resetOrChangeGamerState(true);
          if ($(this).text() === '') {
              addSymbol($(this))
              tura($(this).attr('data-xy'))
@@ -190,9 +243,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function tura(arr) {
         arr = arr.split(",")
-        const awards = checkAward(Number(arr[0]) * boardSize + Number(arr[1]))
-        const winner1 = checkForWinners(arr);
-        sendMessage(gameArray, parser(winner1), awards)
+        //const awards = checkAward(Number(arr[0]) * boardSize + Number(arr[1]))
+        //const winner1 = checkForWinners(arr);
+        sendMove(arr)
+        //sendMessage(gameArray, parser(winner1), awards)
     }
 
     function checkAward( i, $square = $('.square'),) {
